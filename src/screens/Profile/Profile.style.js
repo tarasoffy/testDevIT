@@ -68,12 +68,12 @@ const styles = StyleSheet.create({
 
     errorTextStyle: {
       fontSize: w(14),
-      // position: "absolute",
-      // bottom: w(-20),
-      // left: 0,
       color: Colors.RED,
     },
     
+    marginBottomEditPrifile: {
+        marginBottom: w(32)
+    }
   });
 
   export {styles}

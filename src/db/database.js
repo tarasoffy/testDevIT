@@ -63,8 +63,8 @@ const updateUser = (user) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        'UPDATE users SET name = ?, phone = ?, position = ?, skype = ? WHERE email = ?',
-        [user.name, user.phone, user.position, user.skype, user.email],
+        'UPDATE users SET name = ?, phone = ?, position = ?, skype = ?, email = ? WHERE email = ?',
+        [user.name, user.phone, user.position, user.skype, user.email, user.currentEmail],
         (_, results) => {
           resolve(results);
         },

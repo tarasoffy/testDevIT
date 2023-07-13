@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Alert
+  Alert,
 } from "react-native";
 import { styles } from "./SignIn.styles";
 import LogoComponent from "../../components/Logo";
@@ -19,37 +19,51 @@ import { loginValidationSchema } from "../../ValidationSchemas";
 import { inputPropsSignInScreen } from "../../inputProps";
 import { getUserByEmail } from "../../db/database";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignInScreenFun = () => {
+  const navigation = useNavigation();
 
-  const navigation = useNavigation()
+  const goToProfile = async (data) => {
+    const user = await getUserByEmail(data.mail);
+    user.uriPhoto = data.uriPhoto;
+    navigation.replace("Edit Profile", { user });
+  };
 
-  const goToProfile = async(email) => {
-    const user = await getUserByEmail(email);
-    navigation.replace("Edit Profile", {user})
-  }
+  const checkAuthorized = async () => {
+    try {
+      const jsonData = await AsyncStorage.getItem("dataUser");
 
-  const checkAuthorized = async() => {
-      try {
-        const mail = await AsyncStorage.getItem('mail')
-        if(mail !== "null") {goToProfile(mail)}
-      } catch(e) {
+      const parse = jsonData != null ? JSON.parse(jsonData) : null;
+
+      if (
+        parse.mail !== "null" &&
+        parse.mail !== null &&
+        parse.mail !== undefined
+      ) {
+        goToProfile(parse);
       }
-  }
+    } catch (e) {}
+  };
 
   useEffect(() => {
-    checkAuthorized()
-  },[])
+    checkAuthorized();
+  }, []);
 
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
       validateOnMount={true}
       onSubmit={async (values) => {
+        const jsonData = await AsyncStorage.getItem("dataUser");
+
+        const parse = jsonData != null ? JSON.parse(jsonData) : null;
+
         const user = await getUserByEmail(values.email);
         if (user && user.password === values.password) {
-          navigation.replace("Edit Profile", {user})
+          user.uriPhoto = parse.uriPhoto;
+
+          navigation.replace("Edit Profile", { user });
         } else {
           Alert.alert("Invalid email or password");
         }

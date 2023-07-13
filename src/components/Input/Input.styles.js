@@ -4,8 +4,6 @@ import { Colors } from "../../styles/colors";
 
 const styles = StyleSheet.create({
   input: {
-    // flex: 1,
-    // width: "100%",
     paddingVertical: w(12),
     fontSize: w(16),
     borderBottomWidth: w(1),
@@ -22,12 +20,7 @@ const styles = StyleSheet.create({
   },
 
   wrapperInput: {
-    // backgroundColor: 'blue',
-    // marginTop: w(50),
-    // width: "100%",
-    // position: "relative",
-    // flexDirection: "row",
-    // alignItems: "center",
+
   },
   passwordSection: {
     position: "relative",

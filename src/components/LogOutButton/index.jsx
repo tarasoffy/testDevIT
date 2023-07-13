@@ -1,27 +1,38 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { styles } from "./LogOutButton.style";
 import { Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Context } from "../../../App";
+import { useEffect } from "react";
 
 const LogOutButton = () => {
+  const navigation = useNavigation();
 
-    const navigation = useNavigation()
+  const [uriPhotoState, setUriPhotoState] = useState(null);
 
-    const handleLogOut = async() => {
+  const { uriPhoto } = useContext(Context);
 
-            try {
-              await AsyncStorage.setItem('mail', 'null')
-            } catch(e) {
-              // save error
-            }
-          
+  useEffect(() => {
+    setUriPhotoState(uriPhoto);
+  }, [uriPhoto]);
 
-        navigation.replace('SignIn')
+  const handleLogOut = async (uri) => {
+    const data = {
+      mail: null,
+      uriPhoto: uri,
     };
 
+    try {
+      const jsonData = JSON.stringify(data);
+      await AsyncStorage.setItem("dataUser", jsonData);
+    } catch (e) {}
+
+    navigation.replace("SignIn");
+  };
+
   return (
-    <TouchableOpacity onPress={handleLogOut}>
+    <TouchableOpacity onPress={() => handleLogOut(uriPhotoState)}>
       <Text style={styles.buttonStyle}>Log Out</Text>
     </TouchableOpacity>
   );

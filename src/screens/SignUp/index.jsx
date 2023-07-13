@@ -1,4 +1,4 @@
-import React, { memo, useRef } from "react";
+import React, { memo, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   SafeAreaView,
@@ -20,16 +20,20 @@ import TitleInputTextComponent from "../../components/TitleInputText";
 import { w } from "../../styles/scale";
 import { createAccountValidationSchema } from "../../ValidationSchemas";
 import { inputPropsCreateAccount } from "../../inputProps";
-import { getUserByEmail, insertUser} from "../../db/database";
+import { getUserByEmail, insertUser } from "../../db/database";
 import { useNavigation } from "@react-navigation/native";
 
-const telephoneСodes = ["+1", "+2", "+3", "+4"];
-
-const sumPaddingScreen = 64;
-const marginLeftInput = 25;
-const widthSelectComponent = 70;
-
 const SignUpScreenFun = () => {
+  const sumPaddingScreen = useRef(64).current;
+
+  const marginLeftInput = useRef(25).current;
+
+  const widthSelectComponent = useRef(70).current;
+
+  const telephoneСodes = useRef(["+1", "+2", "+3", "+4"]).current;
+
+  const [selectTelephoneCode, setSelectTelephoneCode] = useState("+1");
+
   const navigation = useNavigation();
 
   const dimension = useWindowDimensions();
@@ -72,16 +76,16 @@ const SignUpScreenFun = () => {
         const user = {
           name: values.name,
           email: values.email,
-          phone: values.phone,
+          phone: selectTelephoneCode + values.phone,
           password: values.password,
         };
 
         try {
           await insertUser(user);
-          Alert.alert('registration successful')
-          navigation.replace("SignIn")
+          Alert.alert("registration successful");
+          navigation.replace("SignIn");
         } catch (error) {
-          Alert.alert('Error registration');
+          Alert.alert("Error registration");
         }
       }}
       validationSchema={createAccountValidationSchema}
@@ -107,7 +111,10 @@ const SignUpScreenFun = () => {
                 <TitleInputTextComponent title="Phone Number" />
 
                 <View style={styles.wrapperPhoneInput}>
-                  <SelectedComponent data={telephoneСodes} />
+                  <SelectedComponent
+                    data={telephoneСodes}
+                    selectCode={setSelectTelephoneCode}
+                  />
                   <InputComponent
                     inputMode="numeric"
                     text={values.phone}

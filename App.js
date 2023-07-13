@@ -1,17 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useEffect, createContext, useState } from "react";
 import { RootNavigator } from "./src/navigation";
-// import Database from "./database";
-
 import {createTables} from "./src/db/database";
 
+export const Context = createContext();
 
 export default function App() {
+
+  const [uriPhoto, setUriPhoto] = useState();
+
+  const updateData = (newData) => {
+    setUriPhoto(newData);
+  };
 
   useEffect(() => {
     createTables()
   },[])
 
   return (
-    <RootNavigator />
+    <Context.Provider value={{ uriPhoto, updateData }}>
+      <RootNavigator />
+    </Context.Provider>
+    
   );
 }
